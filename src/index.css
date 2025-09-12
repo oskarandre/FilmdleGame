@@ -11,7 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 
 
@@ -21,6 +21,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow: hidden; /* Prevent page scrolling */
+  height: 100vh; /* Set fixed height */
 }
 
 
@@ -162,13 +164,14 @@ ul {
 /*========== Game ========*/
 
 .game-interface {
-
   position: fixed;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   margin-top: 5rem;
+  height: calc(100vh - 5rem);
+  overflow: hidden;
 }
 
 .game-info {
@@ -207,12 +210,20 @@ ul {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+  scroll-behavior: smooth;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .answers::-webkit-scrollbar {
   display: none;
 }
+
+/* Ensure the main app container doesn't scroll */
+.app {
+  height: 100vh;
+  overflow: hidden;
+}
+
 
 
 .movie_features {
