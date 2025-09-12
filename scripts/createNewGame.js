@@ -10,6 +10,21 @@ const createNewGame = async (userEmail, date, localUser = false) => {
 
     if (movieData) {
       console.log(`Fetched movie for: ${date}`, movieData);
+      // Extract the movie ID from the document
+      const movieId = movieData.id || movieData.movie_id;
+      if (!movieId) {
+        console.error("No movie ID found in movie data:", movieData);
+        movieData = {
+          correct_movie: "Error: No movie ID found",
+          finished: false
+        };
+      } else {
+        // Store just the movie ID, not the entire object
+        movieData = {
+          correct_movie: movieId,
+          finished: false
+        };
+      }
     } else {
       console.log("No movie found for the specified date.");
       movieData = {
@@ -20,7 +35,7 @@ const createNewGame = async (userEmail, date, localUser = false) => {
 
     const updateData = {
       [date]: {
-        correct_movie : movieData,
+        correct_movie : movieData.correct_movie,
         finished: false,
         guesses_title: [],
         guesses_id: [],
