@@ -16,8 +16,17 @@ const NewFilm = ({ movies, correctMovieId }) => {
     }, []);
 
     const memoizedMovieHandlers = useMemo(() => {
+        if (!correctMovieId) {
+            console.warn("correctMovieId is null, cannot create movie handlers");
+            return [];
+        }
         return movies.map((movie, index) => (
-            <MovieHandler guessedMovie={movie} answerMovie={correctMovieId} onCompare={(result) => handleCompare(index, result)} />
+            <MovieHandler 
+                key={movie.id} 
+                guessedMovie={movie} 
+                answerMovie={correctMovieId} 
+                onCompare={(result) => handleCompare(index, result)} 
+            />
         ));
     }, [movies, correctMovieId, handleCompare]);
 
@@ -130,6 +139,10 @@ const NewFilm = ({ movies, correctMovieId }) => {
     };
 
     if (!movies) return null;
+    
+    if (!correctMovieId) {
+        return <div>Loading game data...</div>;
+    }
 
     return (
         <div>

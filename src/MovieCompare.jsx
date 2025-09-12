@@ -90,7 +90,7 @@ const MovieHandler = ({ guessedMovie, answerMovie, onCompare }) => {
             //console.log("Fetched answer:", information);
         };
         fetchAnswer();
-    }, [answerMovie, guessedMovie]);
+    }, [answerMovie]);
 
     useEffect(() => {
         const fetchGuessedMovie = async () => {
@@ -107,6 +107,7 @@ const MovieHandler = ({ guessedMovie, answerMovie, onCompare }) => {
 
     useEffect(() => {
         if (answer && movieGuess) {
+            console.log("Comparing movies:", { movieGuess, answer });
             onCompare(compareMovies(movieGuess, answer));
             //console.log("Comparing movies...");
         }

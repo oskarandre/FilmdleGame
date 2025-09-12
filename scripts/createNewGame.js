@@ -9,7 +9,7 @@ const createNewGame = async (userEmail, date, localUser = false) => {
     let movieData = await fetchDailyMovie(date);
 
     if (movieData) {
-      console.log(`Fetched movie for:" ${date}`);
+      console.log(`Fetched movie for: ${date}`, movieData);
     } else {
       console.log("No movie found for the specified date.");
       movieData = {

@@ -31,9 +31,11 @@ const UserGameData = ({ userEmail, date }) => {
           if (userGameData.hasOwnProperty(date)) {
             // Handle both old format (correct_movie.id) and new format (correct_movie is just the ID)
             const correctMovie = userGameData[date].correct_movie;
+            console.log("Correct movie data:", correctMovie);
             const movieId = correctMovie && typeof correctMovie === 'object' && correctMovie.id 
               ? correctMovie.id 
               : correctMovie; // fallback for old format or new format where it's just the ID
+            console.log("Extracted movie ID:", movieId);
             setCorrectMovieId(movieId);
             setMovieGuesses(userGameData[date].guesses_id);
             setFinishedGame(userGameData[date].finished);
