@@ -20,14 +20,20 @@ const NewFilm = ({ movies, correctMovieId }) => {
             console.warn("correctMovieId is null, cannot create movie handlers");
             return [];
         }
-        return movies.map((movie, index) => (
-            <MovieHandler 
-                key={movie.id} 
-                guessedMovie={movie} 
-                answerMovie={correctMovieId} 
-                onCompare={(result) => handleCompare(index, result)} 
-            />
-        ));
+        return movies.map((movie, index) => {
+            if (!movie || !movie.id) {
+                console.warn("Movie data is invalid:", movie);
+                return null;
+            }
+            return (
+                <MovieHandler 
+                    key={movie.id} 
+                    guessedMovie={movie} 
+                    answerMovie={correctMovieId} 
+                    onCompare={(result) => handleCompare(index, result)} 
+                />
+            );
+        }).filter(Boolean);
     }, [movies, correctMovieId, handleCompare]);
 
     // Function to determine the card class based on comparison result
@@ -51,6 +57,10 @@ const NewFilm = ({ movies, correctMovieId }) => {
 
     const renderMoviesList = (movies) => {
         return movies.map((movie, index) => {
+            if (!movie || !movie.id) {
+                console.warn("Invalid movie data in renderMoviesList:", movie);
+                return null;
+            }
             return (
 
                 <li key={movie.id} className="movie-list-item">
@@ -135,7 +145,7 @@ const NewFilm = ({ movies, correctMovieId }) => {
                     </div>
                 </li>
             );
-        });
+        }).filter(Boolean);
     };
 
     if (!movies) return null;

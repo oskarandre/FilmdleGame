@@ -3,6 +3,7 @@ import AddMovie from './addMovie.jsx';
 import SearchBar from './SearchBar.jsx';
 import guessMovie from '../scripts/guessMovie.js';
 import { CollectInfo } from './CollectInfo';
+import { useCurrentGameCache } from './hooks/useGameCache.js';
 import './index.css';
 import startConfetti from './YouWin.jsx';
 import GiveUp from './GiveUp.jsx';
@@ -61,6 +62,18 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
   const [hasLoadedGuesses, setHasLoadedGuesses] = useState(false); // New state to track if guesses are loaded
   const [isFinished, setIsFinished] = useState(false); // New state to track if game is finished
   const [gaveUp, setGaveUp] = useState(false); // New state to track if user gave up
+  
+  // Use cache for guest users
+  const isGuest = !userEmail;
+  const { 
+    saveGuess, 
+    finishGame, 
+    giveUpGame, 
+    guesses: cachedGuesses, 
+    finished: cachedFinished, 
+    gaveUp: cachedGaveUp,
+    isLoaded: cacheLoaded
+  } = useCurrentGameCache();
 
   useEffect(() => {
     if (!hasLoadedGuesses && initialMovieGuesses && initialMovieGuesses.length > 0) {
@@ -69,21 +82,99 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
     }
   }, [initialMovieGuesses, hasLoadedGuesses]);
 
+  // Load cached guesses for guest users
+  useEffect(() => {
+    if (isGuest && !hasLoadedGuesses && cacheLoaded) {
+      console.log("Guest user - checking for cached guesses:", cachedGuesses);
+      if (cachedGuesses && cachedGuesses.length > 0) {
+        console.log("Loading cached guesses for guest user:", cachedGuesses);
+        loadCachedGuesses(cachedGuesses);
+      }
+      setHasLoadedGuesses(true);
+    }
+  }, [isGuest, hasLoadedGuesses, cachedGuesses, cacheLoaded]);
+
+  // Also load cached guesses when cache data changes
+  useEffect(() => {
+    if (isGuest && cacheLoaded && cachedGuesses && cachedGuesses.length > 0 && selectedMovies.length === 0) {
+      console.log("Loading cached guesses on cache change:", cachedGuesses);
+      loadCachedGuesses(cachedGuesses);
+    }
+  }, [isGuest, cacheLoaded, cachedGuesses, selectedMovies.length]);
+
+  // Set game state from cache for guest users
+  useEffect(() => {
+    if (isGuest && cacheLoaded) {
+      if (cachedFinished !== undefined) {
+        setIsFinished(cachedFinished);
+      }
+      if (cachedGaveUp !== undefined) {
+        setGaveUp(cachedGaveUp);
+      }
+    }
+  }, [isGuest, cacheLoaded, cachedFinished, cachedGaveUp]);
+
   async function loadGuesses(movieGuesses) {
+    if (!movieGuesses || !Array.isArray(movieGuesses)) {
+      console.warn("Invalid movieGuesses:", movieGuesses);
+      return;
+    }
+    
     for (const movieId of movieGuesses) {
-      await handleMovieSelectById(movieId);
+      if (movieId && typeof movieId === 'number') {
+        await handleMovieSelectById(movieId);
+      } else {
+        console.warn("Skipping invalid movieId:", movieId);
+      }
+    }
+  }
+
+  async function loadCachedGuesses(cachedGuesses) {
+    if (!cachedGuesses || !Array.isArray(cachedGuesses)) {
+      console.warn("Invalid cached guesses:", cachedGuesses);
+      return;
+    }
+    
+    console.log("Loading cached guesses:", cachedGuesses);
+    
+    // Load each cached guess directly into selectedMovies
+    const loadedMovies = [];
+    for (const movieData of cachedGuesses) {
+      if (movieData && movieData.id) {
+        // The cached data should already have the full movie information
+        loadedMovies.push(movieData);
+      } else {
+        console.warn("Skipping invalid cached movie data:", movieData);
+      }
+    }
+    
+    if (loadedMovies.length > 0) {
+      setSelectedMovies(loadedMovies);
+      console.log("Loaded cached movies:", loadedMovies);
     }
   }
 
   const handleMovieSelectById = async (movieId) => {
-    const information = await CollectInfo({ movie_id: movieId });
-    setSelectedMovies((prevSelectedMovies) => {
-      if (!prevSelectedMovies.some(movie => movie.id === movieId)) {
-        return [information, ...prevSelectedMovies];
+    if (!movieId || typeof movieId !== 'number') {
+      console.error("Invalid movieId:", movieId);
+      return null;
+    }
+    
+    try {
+      const information = await CollectInfo({ movie_id: movieId });
+      if (information) {
+        setSelectedMovies((prevSelectedMovies) => {
+          if (!prevSelectedMovies.some(movie => movie.id === movieId)) {
+            return [information, ...prevSelectedMovies];
+          }
+          return prevSelectedMovies;
+        });
       }
-      return prevSelectedMovies;
-    });
-    return information;
+      return information;
+    } catch (error) {
+      console.error("Error fetching movie info:", error);
+      return null;
+    }
   };
 
   const handleMovieSelect = async (movie) => {
@@ -96,10 +187,24 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
         return prevSelectedMovies;
       });
 
-      await guessMovie(userEmail, date, information);
+      // Save guess - use cache for guest users, Firebase for registered users
+      if (isGuest) {
+        const success = saveGuess(information);
+        if (!success) {
+          console.log("You already guessed this movie!");
+          return;
+        }
+      } else {
+        await guessMovie(userEmail, date, information);
+      }
 
       if (movie.id === correctMovieId) {
-        finishedGame(userEmail, date);
+        // Mark game as finished
+        if (isGuest) {
+          finishGame();
+        } else {
+          finishedGame(userEmail, date);
+        }
         setUserStats(userEmail, selectedMovies.length, true);
         setIsFinished(true);
         startConfetti();
