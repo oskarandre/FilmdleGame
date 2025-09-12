@@ -18,8 +18,8 @@ export const saveGuessToCache = (movieData) => {
       return false;
     }
     
-    // Add new guess
-    const updatedGuesses = [...currentGame.guesses, movieData];
+    // Add new guess (most recent first for proper display order)
+    const updatedGuesses = [movieData, ...currentGame.guesses];
     
     cache[today] = {
       ...currentGame,

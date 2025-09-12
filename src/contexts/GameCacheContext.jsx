@@ -97,7 +97,7 @@ export const GameCacheProvider = ({ children }) => {
     console.log("Saving movie guess to cache:", movieData);
     setCache(prevCache => {
       const currentGame = prevCache[today] || { guesses: [], finished: false, gaveUp: false };
-      const updatedGuesses = [...currentGame.guesses, movieData];
+      const updatedGuesses = [movieData, ...currentGame.guesses];
       
       const newCache = {
         ...prevCache,
