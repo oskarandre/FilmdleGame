@@ -2,6 +2,11 @@ import { fetchMovie, fetchCredits } from './lib/tmdb.js';
 
 export const CollectInfo = async ({ movie_id }) => {
     try {
+        if (!movie_id) {
+            console.warn("movie_id is null or undefined, returning null");
+            return null;
+        }
+        
         const [movieInfo, creditsInfo] = await Promise.all([
             fetchMovie(movie_id),
             fetchCredits(movie_id)

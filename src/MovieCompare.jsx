@@ -80,6 +80,10 @@ const MovieHandler = ({ guessedMovie, answerMovie, onCompare }) => {
     useEffect(() => {
         const fetchAnswer = async () => {
             //console.log("Fetching answer for movie ID:", answerMovie);  //answerMovie is null
+            if (!answerMovie) {
+                console.warn("answerMovie is null, skipping fetch");
+                return;
+            }
             const information = await CollectInfo({ movie_id: answerMovie });
             //console.log("Fetched answer:", information);
             setAnswer(information);
@@ -90,6 +94,10 @@ const MovieHandler = ({ guessedMovie, answerMovie, onCompare }) => {
 
     useEffect(() => {
         const fetchGuessedMovie = async () => {
+            if (!guessedMovie || !guessedMovie.id) {
+                console.warn("guessedMovie or guessedMovie.id is null, skipping fetch");
+                return;
+            }
             const info = await CollectInfo({ movie_id: guessedMovie.id });
             setMovieGuess(info);
             //console.log("Fetched guessed movie:", info);
