@@ -89,7 +89,6 @@ export const SearchBar = ({ handleMovieSelect }) => {
         </button>
       </div>
 
-      {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
 
       {isFocused && movies.length > 0 && (
