@@ -18,24 +18,12 @@ export const SearchBar = ({ handleMovieSelect }) => {
     setSelectedIndex(-1);
   }, [movies]);
 
-  // Keep input always focused
+  // Focus input on mount only
   useEffect(() => {
     const input = inputRef.current;
     if (input) {
       input.focus();
     }
-  }, []);
-
-  // Refocus input after any interaction
-  useEffect(() => {
-    const handleClick = () => {
-      if (inputRef.current && document.activeElement !== inputRef.current) {
-        inputRef.current.focus();
-      }
-    };
-    
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
   }, []);
 
   // Fetch data from API
@@ -137,12 +125,6 @@ export const SearchBar = ({ handleMovieSelect }) => {
           setSelectedMovieId(null);
           setSelectedIndex(-1);
           setMovies([]);
-          // Ensure input stays focused
-          setTimeout(() => {
-            if (inputRef.current) {
-              inputRef.current.focus();
-            }
-          }, 0);
         })
         .catch(err => {
           console.log("Movie not found");
@@ -165,7 +147,6 @@ export const SearchBar = ({ handleMovieSelect }) => {
           onFocus={handleFocus}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          autoFocus
         />
         <button
           type="button"
