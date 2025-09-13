@@ -61,121 +61,127 @@ const NewFilm = ({ movies, correctMovieId }) => {
                 console.warn("Invalid movie data in renderMoviesList:", movie);
                 return null;
             }
+            
+            // Define the 6 cards in order: poster, genre, year, director, actors, rating
+            const cards = [
+                { type: "poster", cardClass: "card", content: null },
+                { type: "genre", cardClass: getCardClass(index, "genreMatch"), content: "genres" },
+                { type: "year", cardClass: getCardClass(index, "releaseDateMatch"), content: "year" },
+                { type: "director", cardClass: getCardClass(index, "directorMatch"), content: "director" },
+                { type: "actors", cardClass: getCardClass(index, "actorsMatch"), content: "actors" },
+                { type: "rating", cardClass: getCardClass(index, "voteAverageMatch"), content: "rating" }
+            ];
+            
             return (
 
                 <li key={movie.id} className="movie-list-item">
                     {memoizedMovieHandlers[index]}
                     <div className="card-deck pb-3 ">
-                        <div className={`card animate__animated animate__flipInY`}>
-                            <img src={`https://image.tmdb.org/t/p/w500${movie.poster}`} className="card-img-top" alt={movie.original_title} />
-                        </div>
-                        <div className={`${getCardClass(index, "genreMatch")} animate__animated animate__flipInY`}>
-                            <div className="card-body text-center">
-                                <p className="card-text">
-                                    {/* Show maximum 4 genres */}
-                                    {movie.genres.slice(0, 4).map(genre => genre.name).join(', ')}
-                                </p>
-                            </div>
-                        </div>
-                        <div className={`${getCardClass(index, "releaseDateMatch")} animate__animated animate__flipInY`}>
-                            <div className="card-body text-center">
-                                <p className="card-text">
-                                    {/* shows only year */}
-                                    {movie.release_date.split("-")[0]}
-                                </p>
-                            </div>
-                        </div>
-                        <div className={`${getCardClass(index, "directorMatch")} animate__animated animate__flipInY`}>
-                            <div className="card-body text-center">
-                                <p className="card-text">
-                                    <OverlayTrigger
-                                        trigger={['hover', 'focus']}
-                                        placement="auto"
-                                        flip={true}
-                                        popperConfig={{
-                                            modifiers: [
-                                                {
-                                                    name: 'preventOverflow',
-                                                    options: {
-                                                        boundary: 'viewport',
-                                                    },
-                                                },
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right'],
-                                                    },
-                                                },
-                                            ],
-                                        }}
-                                        overlay={
-                                            <Popover id={`popover-positioned-bottom`}>
-                                                <Popover.Header as="h3">{movie.director.name}</Popover.Header>
-                                                <Popover.Body>
-                                                    <PreviewActor actor_id={movie.director.id} />
-                                                </Popover.Body>
-                                            </Popover>
-                                        }
-                                    >
-                                        <span style={{ cursor: 'pointer' }}>
-                                            {movie.director.name}
-                                        </span>
-                                    </OverlayTrigger>
-                                </p>
-                            </div>
-                        </div>
-                        <div className={`${getCardClass(index, "actorsMatch")} animate__animated animate__flipInY`}>
-                            <div className="card-body text-center">
-                                <p className="card-text">
-                                    {/* compare matched actors with movie to find index of actor names */}
-                                    {comparisonResults[index] && comparisonResults[index].matchedActors[0].name ? (
-                                        comparisonResults[index].matchedActors.map(actor => (
-                                            <OverlayTrigger
-                                                key={actor.id}
-                                                trigger={['hover', 'focus']}
-                                                placement="auto"
-                                                flip={true}
-                                                popperConfig={{
-                                                    modifiers: [
-                                                        {
-                                                            name: 'preventOverflow',
-                                                            options: {
-                                                                boundary: 'viewport',
-                                                            },
-                                                        },
-                                                        {
-                                                            name: 'flip',
-                                                            options: {
-                                                                fallbackPlacements: ['top', 'bottom', 'left', 'right'],
-                                                            },
-                                                        },
-                                                    ],
-                                                }}
-                                                overlay={
-                                                    <Popover id={`popover-positioned-bottom`}>
-                                                        <Popover.Header as="h3">{actor.name}</Popover.Header>
-                                                        <Popover.Body>
-                                                            <PreviewActor actor_id={actor.id} />
-                                                        </Popover.Body>
-                                                    </Popover>
-                                                }
-                                            >
-                                                <span style={{ cursor: 'pointer' }}>
-                                                    {actor.name}
-                                                </span>
-                                            </OverlayTrigger>
-                                        )).reduce((prev, curr) => [prev, ', ', curr])
+                        {cards.map((card, cardIndex) => {
+                            const combinedDelayClass = `animate__flipInY--delay-${Math.min(index, 5)}-${cardIndex}`;
+                            
+                            return (
+                                <div key={cardIndex} className={`${card.cardClass} animate__animated animate__flipInY ${combinedDelayClass}`}>
+                                    {card.type === "poster" ? (
+                                        <img src={`https://image.tmdb.org/t/p/w500${movie.poster}`} className="card-img-top" alt={movie.original_title} />
                                     ) : (
-                                        "None"
+                                        <div className="card-body text-center">
+                                            <p className="card-text">
+                                                {card.content === "genres" && (
+                                                    /* Show maximum 4 genres */
+                                                    movie.genres.slice(0, 4).map(genre => genre.name).join(', ')
+                                                )}
+                                                {card.content === "year" && (
+                                                    /* shows only year */
+                                                    movie.release_date.split("-")[0]
+                                                )}
+                                                {card.content === "director" && (
+                                                    <OverlayTrigger
+                                                        trigger={['hover', 'focus']}
+                                                        placement="auto"
+                                                        flip={true}
+                                                        popperConfig={{
+                                                            modifiers: [
+                                                                {
+                                                                    name: 'preventOverflow',
+                                                                    options: {
+                                                                        boundary: 'viewport',
+                                                                    },
+                                                                },
+                                                                {
+                                                                    name: 'flip',
+                                                                    options: {
+                                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+                                                                    },
+                                                                },
+                                                            ],
+                                                        }}
+                                                        overlay={
+                                                            <Popover id={`popover-positioned-bottom`}>
+                                                                <Popover.Header as="h3">{movie.director.name}</Popover.Header>
+                                                                <Popover.Body>
+                                                                    <PreviewActor actor_id={movie.director.id} />
+                                                                </Popover.Body>
+                                                            </Popover>
+                                                        }
+                                                    >
+                                                        <span style={{ cursor: 'pointer' }}>
+                                                            {movie.director.name}
+                                                        </span>
+                                                    </OverlayTrigger>
+                                                )}
+                                                {card.content === "actors" && (
+                                                    /* compare matched actors with movie to find index of actor names */
+                                                    comparisonResults[index] && comparisonResults[index].matchedActors[0].name ? (
+                                                        comparisonResults[index].matchedActors.map(actor => (
+                                                            <OverlayTrigger
+                                                                key={actor.id}
+                                                                trigger={['hover', 'focus']}
+                                                                placement="auto"
+                                                                flip={true}
+                                                                popperConfig={{
+                                                                    modifiers: [
+                                                                        {
+                                                                            name: 'preventOverflow',
+                                                                            options: {
+                                                                                boundary: 'viewport',
+                                                                            },
+                                                                        },
+                                                                        {
+                                                                            name: 'flip',
+                                                                            options: {
+                                                                                fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+                                                                            },
+                                                                        },
+                                                                    ],
+                                                                }}
+                                                                overlay={
+                                                                    <Popover id={`popover-positioned-bottom`}>
+                                                                        <Popover.Header as="h3">{actor.name}</Popover.Header>
+                                                                        <Popover.Body>
+                                                                            <PreviewActor actor_id={actor.id} />
+                                                                        </Popover.Body>
+                                                                    </Popover>
+                                                                }
+                                                            >
+                                                                <span style={{ cursor: 'pointer' }}>
+                                                                    {actor.name}
+                                                                </span>
+                                                            </OverlayTrigger>
+                                                        )).reduce((prev, curr) => [prev, ', ', curr])
+                                                    ) : (
+                                                        "None"
+                                                    )
+                                                )}
+                                                {card.content === "rating" && (
+                                                    movie.vote_average.toFixed(1)
+                                                )}
+                                            </p>
+                                        </div>
                                     )}
-                                </p>
-                            </div>
-                        </div>
-                        <div className={`${getCardClass(index, "voteAverageMatch")} animate__animated animate__flipInY`}>
-                            <div className="card-body text-center">
-                                <p className="card-text">{movie.vote_average.toFixed(1)}</p>
-                            </div>
-                        </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </li>
             );
