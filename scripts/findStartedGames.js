@@ -12,8 +12,9 @@ export default async function findStartedGames(userEmail) {
             const gameData = userDoc.data();
             Object.keys(gameData).forEach(key => {
                 const game = gameData[key];
-                if (game.finished === false && game.guesses_id[0]) {
-                    startedGames.push(game.correct_movie.date);
+                // The date is the key, not a property within correct_movie
+                if (game.finished === false && game.guesses_id && game.guesses_id.length > 0) {
+                    startedGames.push(key);
                 }
             });
         }

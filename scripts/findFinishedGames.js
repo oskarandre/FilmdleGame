@@ -13,11 +13,12 @@ export default async function findFinishedGames(userEmail) {
             const gameData = userDoc.data();
             Object.keys(gameData).forEach(key => {
                 const game = gameData[key];
+                // The date is the key, not a property within correct_movie
                 if(game.gave_up){
-                    giveUpDates.push(game.correct_movie.date);
+                    giveUpDates.push(key);
                 }
                 else if(game.finished) {
-                    finishedDates.push(game.correct_movie.date);
+                    finishedDates.push(key);
                 }
             });
         }

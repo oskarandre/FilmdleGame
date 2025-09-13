@@ -38,11 +38,11 @@ const Archive = ({ userEmail }) => {
     // fetch finished and started games
     const fetchGames = async () => {
         const { finishedDates, giveUpDates } = await findFinishedGames(userEmail);
-        setFinishedDates(finishedDates);
-        setGiveUpDates(giveUpDates);
+        setFinishedDates(finishedDates || []);
+        setGiveUpDates(giveUpDates || []);
 
         const dates = await findStartedGames(userEmail);
-        setStartedDates(dates);
+        setStartedDates(dates || []);
     };
 
     useEffect(() => {
@@ -71,6 +71,7 @@ const Archive = ({ userEmail }) => {
         const formattedDate = formatDate(date);
         // Determine the class based on priority: red -> green -> yellow
         let className = 'old-game';
+        
         if (giveUpDates.includes(formattedDate)) {
             className += ' red';
         } else if (finishedDates.includes(formattedDate)) {
