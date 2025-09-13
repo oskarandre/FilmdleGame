@@ -90,7 +90,24 @@ const NewFilm = ({ movies, correctMovieId }) => {
                                 <p className="card-text">
                                     <OverlayTrigger
                                         trigger={['hover', 'focus']}
-                                        placement="bottom"
+                                        placement="auto"
+                                        flip={true}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'preventOverflow',
+                                                    options: {
+                                                        boundary: 'viewport',
+                                                    },
+                                                },
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+                                                    },
+                                                },
+                                            ],
+                                        }}
                                         overlay={
                                             <Popover id={`popover-positioned-bottom`}>
                                                 <Popover.Header as="h3">{movie.director.name}</Popover.Header>
@@ -116,7 +133,24 @@ const NewFilm = ({ movies, correctMovieId }) => {
                                             <OverlayTrigger
                                                 key={actor.id}
                                                 trigger={['hover', 'focus']}
-                                                placement="bottom"
+                                                placement="auto"
+                                                flip={true}
+                                                popperConfig={{
+                                                    modifiers: [
+                                                        {
+                                                            name: 'preventOverflow',
+                                                            options: {
+                                                                boundary: 'viewport',
+                                                            },
+                                                        },
+                                                        {
+                                                            name: 'flip',
+                                                            options: {
+                                                                fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+                                                            },
+                                                        },
+                                                    ],
+                                                }}
                                                 overlay={
                                                     <Popover id={`popover-positioned-bottom`}>
                                                         <Popover.Header as="h3">{actor.name}</Popover.Header>

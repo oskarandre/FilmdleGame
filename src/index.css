@@ -908,7 +908,28 @@ ul > li {
 
 .actor-image{
   width: 200px;
-  
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Popover positioning and styling */
+.popover {
+  max-width: 300px !important;
+  z-index: 1050 !important;
+}
+
+.popover-body {
+  padding: 0.5rem !important;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.actor_info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 /* ============= Footer ============================ */
