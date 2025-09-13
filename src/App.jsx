@@ -94,13 +94,14 @@ function App() {
               <Modal show={showModal} onClose={() => setShowModal(false)} /> {/* Add the Modal component */}
 
             </>
-          }
+          }      
+        
+          
         </div>
-        {/* <p className='footer'>© 2024 Filmdle</p> */}
         <div className='tmdb'>
-          <p className='tmdbText'>Powered by</p>
-          <img className='tmdbLogo' src={tmdbLogo} alt="TMDB Logo" />
-        </div>
+            <p className='tmdbText'>Powered by</p>
+            <img className='tmdbLogo' src={tmdbLogo} alt="TMDB Logo" />
+          </div>
       </div>
     </GameCacheProvider>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { login } from './lib/auth.js';
 import SignUp from './SignUp.jsx';
+import GoogleSignInButton from './components/GoogleSignInButton.jsx';
 import loginLogo from './assets/logo_white.png';
 
 const Login = ({ onClose }) => {
@@ -18,6 +19,15 @@ const Login = ({ onClose }) => {
     } else {
       setError(null);
     }
+  };
+
+  const handleGoogleSuccess = (user) => {
+    setError(null);
+    // The auth context will handle the user state change
+  };
+
+  const handleGoogleError = (error) => {
+    setError(error);
   };
 
   return (
@@ -54,6 +64,25 @@ const Login = ({ onClose }) => {
         </div>
         <button type="submit">Login</button>
       </form>
+
+      <div style={{ margin: '1rem 0', textAlign: 'center' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          margin: '1rem 0',
+          color: 'white'
+        }}>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#ddd' }}></div>
+          <span style={{ margin: '0 1rem', fontSize: '0.9rem' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#ddd' }}></div>
+        </div>
+        
+        <GoogleSignInButton 
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          className="google-signin-btn"
+        />
+      </div>
 
       <a href="">Forgot your password?</a>
       <br />

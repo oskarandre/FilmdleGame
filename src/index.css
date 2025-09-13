@@ -493,23 +493,25 @@ ul > li {
 /*========== Login page ========*/
 
 .login-page {
-  background-color: rgba(26, 26, 26, 0.8);
+  background-color: rgba(26, 26, 26, 0.9);
   backdrop-filter: blur(5px);
-  padding: 3rem;
-  border-radius: 20px;
-  border: 3px solid rgba(133, 133, 133, 0.1);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 2px solid rgba(133, 133, 133, 0.2);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.8);
-  width: 100%;
-  max-width: 400px;
+  width: 90%;
+  max-width: 380px;
   margin: 0 auto;
   text-align: center;
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 0%;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 20%);
+  transform: translate(-50%, -50%);
   z-index: 3;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .login-background{
@@ -528,8 +530,8 @@ ul > li {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .logo-login {
@@ -556,8 +558,9 @@ ul > li {
 
 
 .login-page h2 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: white;
+  margin: 0;
 }
 
 .login-page form {
@@ -577,25 +580,25 @@ ul > li {
 }
 
 .login-page input {
-  padding: 0.75rem;
-  margin-bottom: 1rem;
+  padding: 0.6rem;
+  margin-bottom: 0.8rem;
   border: 1px solid #ddd;
   border-radius: 5px;
-  font-size: 1rem;
-  height: 2.5rem;
+  font-size: 0.9rem;
+  height: 2.2rem;
   width: 100%;
 }
 
 .login-page button {
-  padding: 0.75rem;
+  padding: 0.6rem;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  height: 2.5;
+  margin-top: 1rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+  height: 2.2rem;
   cursor: pointer;
   transition: background-color 0.3s;
   width: 100%;
@@ -609,19 +612,20 @@ ul > li {
 
 .login-page p {
   color: red;
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
 }
 
 .login-page b {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 400;
   color: white;
   text-decoration: none;
-  margin-right: 0.8rem;
+  margin-right: 0.6rem;
 }
 
 .login-page a {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #007bff;
   text-decoration: none;
@@ -643,6 +647,76 @@ ul > li {
 .back-to-login:focus {
   text-decoration: underline;
   color: #0056b3;
+}
+
+/* Mobile responsiveness for login popup */
+@media (max-width: 768px) {
+  .login-page {
+    width: 95%;
+    max-width: 350px;
+    padding: 1.5rem;
+    max-height: 85vh;
+  }
+  
+  .login-page h2 {
+    font-size: 1.8rem;
+  }
+  
+  .login-page input {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    height: 2rem;
+  }
+  
+  .login-page button {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    height: 2rem;
+  }
+  
+  .login-page b,
+  .login-page a {
+    font-size: 0.9rem;
+  }
+  
+  .login-page p {
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .login-page {
+    width: 98%;
+    max-width: 320px;
+    padding: 1rem;
+    max-height: 90vh;
+  }
+  
+  .login-page h2 {
+    font-size: 1.6rem;
+  }
+  
+  .login-page input {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    height: 1.8rem;
+  }
+  
+  .login-page button {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    height: 1.8rem;
+  }
+  
+  .login-page b,
+  .login-page a {
+    font-size: 0.85rem;
+  }
+  
+  .login-page p {
+    font-size: 0.75rem;
+  }
 }
 
 .HeadWrapper {
@@ -840,15 +914,14 @@ ul > li {
 /* ============= Footer ============================ */
 
 
-
 .tmdb {
   display: flex;
   justify-content: right;
   align-items: center;
+  color: white;
   position: fixed;
   bottom: 0;
   width: 100%;
-  color: white;
 }
 
 .tmdbText{
@@ -861,4 +934,179 @@ ul > li {
   margin-left: 0.5rem;
   margin-right: 1rem;
   margin-bottom: 0.5rem;
+}
+
+/* Responsive footer */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 1rem;
+  }
+  
+  .footer-links {
+    order: 1;
+  }
+  
+  .footer-copyright {
+    order: 2;
+  }
+  
+  .tmdb {
+    order: 3;
+    justify-content: center;
+  }
+}
+
+/* Google Sign-In Button Spinner Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Google Sign-In Button Styles */
+.google-signin-btn {
+  font-family: 'Roboto', sans-serif;
+}
+
+.google-signin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ============= Legal Pages ============================ */
+
+.legal-page {
+  min-height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+              url('/src/assets/img_background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 2rem 1rem;
+  color: white;
+}
+
+.legal-content {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: rgba(26, 26, 26, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 3px solid rgba(133, 133, 133, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  padding: 3rem;
+  line-height: 1.6;
+}
+
+.legal-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  border-bottom: 2px solid rgba(231, 231, 231, 0.3);
+  padding-bottom: 2rem;
+}
+
+.legal-header h1 {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.last-updated {
+  color: #ccc;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.legal-section {
+  margin-bottom: 2.5rem;
+}
+
+.legal-section h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #007bff;
+  padding-left: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.legal-section p {
+  margin-bottom: 1rem;
+  color: #e0e0e0;
+  font-size: 1.1rem;
+}
+
+.legal-section ul {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.legal-section li {
+  margin-bottom: 0.5rem;
+  color: #e0e0e0;
+  font-size: 1.1rem;
+}
+
+.legal-section a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.legal-section a:hover,
+.legal-section a:focus {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.legal-footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid rgba(231, 231, 231, 0.3);
+}
+
+.back-to-home {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.back-to-home:hover,
+.back-to-home:focus {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+  text-decoration: none;
+  color: white;
+}
+
+/* Responsive design for legal pages */
+@media (max-width: 768px) {
+  .legal-content {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+  }
+  
+  .legal-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .legal-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .legal-section p,
+  .legal-section li {
+    font-size: 1rem;
+  }
 }

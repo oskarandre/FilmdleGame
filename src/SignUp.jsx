@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { setDoc, doc, Timestamp } from "firebase/firestore";
 import { signUp } from './lib/auth.js';
 import { db } from './lib/firebase.js';
+import GoogleSignInButton from './components/GoogleSignInButton.jsx';
 import loginLogo from './assets/logo_white.png';
 
 const SignUp = () => {
@@ -51,6 +52,20 @@ const SignUp = () => {
     }
   };
 
+  const handleGoogleSuccess = (user) => {
+    setError(null);
+    setMessage('Sign up successful!');
+    // Save user data to Firestore for Google sign-in users
+    if (user.email) {
+      saveUserToDb(user.email);
+    }
+  };
+
+  const handleGoogleError = (error) => {
+    setError(error);
+    setMessage(null);
+  };
+
   return (
     <div>
       <div className='login-header'>
@@ -73,6 +88,26 @@ const SignUp = () => {
       </div>
 
       <button onClick={handleSignUp}>Sign Up</button>
+
+      <div style={{ margin: '1rem 0', textAlign: 'center' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          margin: '1rem 0',
+          color: 'white'
+        }}>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#ddd' }}></div>
+          <span style={{ margin: '0 1rem', fontSize: '0.9rem' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#ddd' }}></div>
+        </div>
+        
+        <GoogleSignInButton 
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          className="google-signin-btn"
+        />
+      </div>
+
       {message && <p>{message}</p>}
       {error && <p>{error}</p>}
 
