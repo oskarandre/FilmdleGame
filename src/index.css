@@ -49,18 +49,198 @@ button:focus-visible {
 
 
 
+/* Theme-aware styling for light and dark modes */
 @media (prefers-color-scheme: light) {
+  /* Force override of any existing styles */
+  * {
+    box-sizing: border-box;
+  }
   :root {
     color: #213547;
     background-color: #ffffff;
   }
+  
   a:hover {
     color: #747bff;
   }
+  
   button {
     background-color: #f9f9f9;
   }
-} */
+  
+  /* Ensure background image is visible in light theme */
+  .bg-image {
+    opacity: 1;
+    filter: brightness(1.2) contrast(1) saturate(1.2);
+    /* Force visibility */
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Background container for light mode */
+  .bg {
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Ensure it covers the full area */
+    min-height: 100vh !important;
+    min-width: 100vw !important;
+  }
+  
+  /* Light overlay for better text readability */
+  .bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.0);
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  
+  /* Ensure body doesn't interfere with background */
+  body {
+    background: transparent !important;
+  }
+  
+  /* Ensure app container doesn't interfere with background */
+  .app {
+    background: transparent !important;
+  }
+  
+  /* Adjust text colors for better contrast on light background */
+  h1, h2 {
+    color: #1a1a1a;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+  }
+  
+  a {
+    color: #2c3e50;
+    filter: drop-shadow(0 0 0.75rem rgba(255, 255, 255, 0.8));
+  }
+  
+  a:hover,
+  a:focus {
+    color: #1a1a1a;
+  }
+  
+  hr {
+    background: #2c3e50;
+  }
+  
+  /* Adjust game interface elements for light theme */
+  .game-info {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 3px solid rgba(44, 62, 80, 0.3);
+    color: #1a1a1a;
+  }
+  
+  .statbox {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 3px solid rgba(44, 62, 80, 0.3);
+    color: #1a1a1a;
+  }
+  
+  .archive-header {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 3px solid rgba(44, 62, 80, 0.3);
+  }
+  
+  .archive-header h1 {
+    color: #1a1a1a;
+  }
+  
+  .old-game {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 3px solid rgba(44, 62, 80, 0.3);
+    color: #1a1a1a;
+  }
+  
+  .old-game:hover,
+  .old-game:focus {
+    background-color: rgba(200, 200, 200, 0.9);
+  }
+  
+  /* Navigation elements for light theme */
+  .nav-link {
+    color: #2c3e50;
+  }
+  
+  .nav-link:hover,
+  .nav-link:focus {
+    background-color: rgba(44, 62, 80, 0.1);
+    color: #1a1a1a;
+  }
+  
+  .nav-link.active {
+    background-color: rgba(44, 62, 80, 0.2);
+    color: #1a1a1a;
+  }
+  
+  /* Login page adjustments for light theme */
+  .login-page {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(44, 62, 80, 0.3);
+  }
+  
+  .login-page h2 {
+    color: #1a1a1a;
+  }
+  
+  .login-page label {
+    color: #1a1a1a;
+  }
+  
+  .login-page b {
+    color: #1a1a1a;
+  }
+  
+  .close-login {
+    color: #2c3e50 !important;
+  }
+  
+  .close-login:hover,
+  .close-login:focus {
+    color: #1a1a1a !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Ensure background image is visible in dark theme */
+  .bg-image {
+    opacity: 1;
+    filter: brightness(1) contrast(1);
+  }
+  
+  /* Ensure body doesn't interfere with background */
+  body {
+    background: transparent !important;
+  }
+  
+  /* Ensure app container doesn't interfere with background */
+  .app {
+    background: transparent !important;
+  }
+}
+
+/* Mobile responsiveness for background image */
+@media (max-width: 768px) {
+  .bg-image {
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Ensure background image works on all devices */
+@media (max-width: 480px) {
+  .bg-image {
+    min-height: 100vh;
+    min-width: 100vw;
+  }
+}
 
 body {
   overflow: hidden; /* Prevent body scrolling */
@@ -125,6 +305,26 @@ ul {
   z-index: -1;
 }
 
+/* Theme-aware background container styling */
+@media (prefers-color-scheme: light) {
+  .bg {
+    background-color: #f0f8ff;
+    /* Add a subtle gradient overlay to help with visibility */
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2)),
+      linear-gradient(45deg, #e3f2fd, #f3e5f5);
+    /* Add a fallback pattern */
+    background-size: cover, 20px 20px;
+    background-position: center, 0 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg {
+    background-color: rgba(0, 0, 0, 1);
+  }
+}
+
 /* #base{
   background-color: rgba(0, 0, 0, 1);
   width: 100%;
@@ -137,7 +337,15 @@ ul {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: -1;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -2;
+  /* Ensure the image covers the full viewport */
+  min-width: 100%;
+  min-height: 100vh;
+  /* Force the image to be visible */
+  display: block;
+  visibility: visible;
 }
 
 /* .app {
@@ -583,7 +791,7 @@ ul {
 .btn-give-up:hover,
 .btn-give-up:focus {
   border-color: #dadbf7;
-  background-color: #DC3545;
+  background-color: #DC3533;
 }
 
 .skull-icon{
