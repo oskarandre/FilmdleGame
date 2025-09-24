@@ -256,8 +256,14 @@ h1 {
 }
 
 h2 {
-  font-size: 1.7vw;
+  font-size: 1.2vw;
   line-height: 1.1;
+  color: ivory;
+}
+
+h3 {
+  font-size: 1.2vw;
+  line-height: 1;
   color: ivory;
 }
 
@@ -392,9 +398,9 @@ ul {
   flex-direction: column;
   margin-top: 20px;
   font-size: 1.1em;
-  margin: 1rem;
-  padding: 1rem;
-  width: 200px;
+  margin: 1vw;
+  padding: 1vw;
+  width: 15vw;
   background-color: rgba(46, 46, 46, 0.3);
   backdrop-filter: blur(5px);
   border: 3px solid rgba(231, 231, 231, 0.3);
@@ -408,15 +414,15 @@ ul {
 
 .game-container {
   margin-top: 1rem;
-  width: 80%;
-  /* min-width: 80%;
-  max-width: 80%; */
+  width: 70%;
+  max-width: 1200px; /* Limit maximum width on large screens */
+  /* min-width: 80%; */
 }
 
 .answers {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 20rem); /* Reduced to give more space for answers */
+  max-height: calc(100vh - 18rem); /* Reduced to give more space for answers */
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
@@ -426,6 +432,20 @@ ul {
   will-change: scroll-position;
   transform: translateZ(0); /* Force hardware acceleration */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Adjust max-height for very large screens to ensure scrolling is needed */
+@media (min-width: 1400px) {
+  .answers {
+    max-height: calc(100vh - 20rem); /* More restrictive on very large screens */
+  }
+}
+
+/* Adjust max-height for giant screens (ultrawide, 4K, etc.) */
+@media (min-width: 1920px) {
+  .answers {
+    max-height: calc(100vh - 24rem); /* Even more restrictive on giant screens */
+  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -499,7 +519,7 @@ ul {
 }
 
 .card-text {
-  font-size: 1.5vw;
+  font-size: 1vw;
   font-weight: 600;
   color: white;
 }
