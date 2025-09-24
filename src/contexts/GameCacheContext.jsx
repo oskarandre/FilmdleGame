@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const GameCacheContext = createContext();
 
@@ -57,7 +57,7 @@ export const GameCacheProvider = ({ children }) => {
   }, [cache, isLoaded]);
 
   // Get current day's game data
-  const getCurrentGameData = () => {
+  const getCurrentGameData = useCallback(() => {
     const today = new Date().toISOString().split('T')[0];
     const gameData = cache[today];
     
@@ -71,10 +71,10 @@ export const GameCacheProvider = ({ children }) => {
     
     console.log("No valid game data found");
     return null;
-  };
+  }, [cache]);
 
   // Save current day's game data
-  const saveCurrentGameData = (gameData) => {
+  const saveCurrentGameData = useCallback((gameData) => {
     const today = new Date().toISOString().split('T')[0];
     setCache(prevCache => ({
       ...prevCache,
@@ -84,15 +84,15 @@ export const GameCacheProvider = ({ children }) => {
         lastUpdated: new Date().toISOString()
       }
     }));
-  };
+  }, []);
 
   // Clear all cache (for new game)
-  const clearAllCache = () => {
+  const clearAllCache = useCallback(() => {
     setCache({});
-  };
+  }, []);
 
   // Save a movie guess for current day
-  const saveMovieGuess = (movieData) => {
+  const saveMovieGuess = useCallback((movieData) => {
     const today = new Date().toISOString().split('T')[0];
     console.log("Saving movie guess to cache:", movieData);
     setCache(prevCache => {
@@ -111,10 +111,10 @@ export const GameCacheProvider = ({ children }) => {
       console.log("Updated cache:", newCache);
       return newCache;
     });
-  };
+  }, []);
 
   // Mark current game as finished
-  const markGameFinished = () => {
+  const markGameFinished = useCallback(() => {
     const today = new Date().toISOString().split('T')[0];
     setCache(prevCache => ({
       ...prevCache,
@@ -124,10 +124,10 @@ export const GameCacheProvider = ({ children }) => {
         lastUpdated: new Date().toISOString()
       }
     }));
-  };
+  }, []);
 
   // Mark current game as gave up
-  const markGameGaveUp = () => {
+  const markGameGaveUp = useCallback(() => {
     const today = new Date().toISOString().split('T')[0];
     setCache(prevCache => ({
       ...prevCache,
@@ -137,14 +137,14 @@ export const GameCacheProvider = ({ children }) => {
         lastUpdated: new Date().toISOString()
       }
     }));
-  };
+  }, []);
 
   // Check if current day's game exists in cache
-  const hasCurrentGameData = () => {
+  const hasCurrentGameData = useCallback(() => {
     const today = new Date().toISOString().split('T')[0];
     const gameData = cache[today];
     return gameData && (gameData.correctMovieId || (gameData.guesses && gameData.guesses.length > 0));
-  };
+  }, [cache]);
 
   const value = {
     cache,

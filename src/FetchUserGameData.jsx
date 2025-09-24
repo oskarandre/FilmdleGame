@@ -29,64 +29,77 @@ const UserGameData = ({ userEmail, date }) => {
     clearCache
   } = useCurrentGameCache();
 
+  // Handle guest users with cache - separate effect to avoid infinite loops
+  useEffect(() => {
+    if (isGuest && cacheLoaded) {
+      // Check if we have cached data for today
+      const today = new Date().toISOString().split('T')[0];
+      const hasCachedData = cachedGameData && Object.keys(cachedGameData).length > 0;
+      
+      console.log("Cache check - hasCachedData:", hasCachedData, "cachedCorrectMovieId:", cachedCorrectMovieId, "cachedGameData:", cachedGameData);
+      
+      if (hasCachedData) {
+        console.log("Loading guest game from cache:", cachedGameData);
+        setCorrectMovieId(cachedCorrectMovieId);
+        setMovieGuesses(cachedGuesses);
+        setFinishedGame(cachedFinished);
+        setGaveUp(cachedGaveUp);
+        setIsLoading(false);
+      }
+    }
+  }, [isGuest, cacheLoaded, cachedGameData, cachedCorrectMovieId, cachedGuesses, cachedFinished, cachedGaveUp]);
+
+  // Handle creating new guest game - separate effect
+  useEffect(() => {
+    const createGuestGame = async () => {
+      if (isGuest && cacheLoaded && !cachedGameData) {
+        console.log("No cached data found, creating new guest game");
+        
+        try {
+          const movieData = await fetchDailyMovie(date);
+          if (movieData) {
+            const movieId = movieData.id || movieData.movie_id;
+            if (movieId) {
+              console.log("Guest user movie data:", movieData);
+              console.log("Guest user movie ID:", movieId);
+              
+              // Save to cache
+              updateGameData({
+                correctMovieId: movieId,
+                guesses: [],
+                finished: false,
+                gaveUp: false
+              });
+              
+              setCorrectMovieId(movieId);
+              setMovieGuesses([]);
+              setFinishedGame(false);
+              setGaveUp(false);
+            } else {
+              console.error("No movie ID found in guest user movie data:", movieData);
+              setError("Error: No movie ID found");
+            }
+          } else {
+            setError("Error fetching today's movie");
+          }
+        } catch (error) {
+          setError("Error creating guest game");
+          console.error("Error creating guest game:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    createGuestGame();
+  }, [isGuest, cacheLoaded, cachedGameData, date, updateGameData]);
+
   useEffect(() => {
     const fetchUserGameData = async () => {
       try {
-        // Handle guest users with local cache
+        // Skip guest users - they're handled in separate effects above
         if (isGuest) {
-          // Wait for cache to be loaded before proceeding
-          if (!cacheLoaded) {
-            console.log("Waiting for cache to load...");
-            return;
-          }
-          
-          // Check if we have cached data for today
-          const today = new Date().toISOString().split('T')[0];
-          const hasCachedData = cachedGameData && Object.keys(cachedGameData).length > 0;
-          
-          console.log("Cache check - hasCachedData:", hasCachedData, "cachedCorrectMovieId:", cachedCorrectMovieId, "cachedGameData:", cachedGameData);
-          
-          if (hasCachedData) {
-            console.log("Loading guest game from cache:", cachedGameData);
-            setCorrectMovieId(cachedCorrectMovieId);
-            setMovieGuesses(cachedGuesses);
-            setFinishedGame(cachedFinished);
-            setGaveUp(cachedGaveUp);
-            setIsLoading(false);
-            return;
-          } else {
-            // No cached data at all - create new game
-            console.log("No cached data found, creating new guest game");
-            
-            const movieData = await fetchDailyMovie(date);
-            if (movieData) {
-              const movieId = movieData.id || movieData.movie_id;
-              if (movieId) {
-                console.log("Guest user movie data:", movieData);
-                console.log("Guest user movie ID:", movieId);
-                
-                // Save to cache
-                updateGameData({
-                  correctMovieId: movieId,
-                  guesses: [],
-                  finished: false,
-                  gaveUp: false
-                });
-                
-                setCorrectMovieId(movieId);
-                setMovieGuesses([]);
-                setFinishedGame(false);
-                setGaveUp(false);
-              } else {
-                console.error("No movie ID found in guest user movie data:", movieData);
-                setError("Error: No movie ID found");
-              }
-            } else {
-              setError("Error fetching today's movie");
-            }
-            setIsLoading(false);
-            return;
-          }
+          return;
         }
 
         // Handle registered users with Firebase
@@ -167,7 +180,7 @@ const UserGameData = ({ userEmail, date }) => {
     };
 
     fetchUserGameData();
-  }, [userEmail, date, newGameCreated, isGuest, cacheLoaded, isGameCached, cachedCorrectMovieId, cachedGuesses, cachedFinished, cachedGaveUp, updateGameData]);
+  }, [userEmail, date, newGameCreated]);
 
   if (isLoading) {
     return <p>Loading game data...</p>;

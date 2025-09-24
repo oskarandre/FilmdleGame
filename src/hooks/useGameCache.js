@@ -1,4 +1,5 @@
 import { useGameCache } from '../contexts/GameCacheContext';
+import { useMemo } from 'react';
 
 // Custom hook for current day's game cache operations
 export const useCurrentGameCache = () => {
@@ -13,8 +14,13 @@ export const useCurrentGameCache = () => {
     clearAllCache
   } = useGameCache();
 
-  const gameData = isLoaded ? getCurrentGameData() : null;
-  const isGameCached = isLoaded ? hasCurrentGameData() : false;
+  const gameData = useMemo(() => {
+    return isLoaded ? getCurrentGameData() : null;
+  }, [isLoaded, getCurrentGameData]);
+
+  const isGameCached = useMemo(() => {
+    return isLoaded ? hasCurrentGameData() : false;
+  }, [isLoaded, hasCurrentGameData]);
 
   const saveGuess = (movieData) => {
     saveMovieGuess(movieData);

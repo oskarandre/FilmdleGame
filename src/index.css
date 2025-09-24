@@ -1007,7 +1007,7 @@ ul > li {
   border-radius: 8px;
   cursor: pointer;
   transition: border-color 0.25s;
-  z-index: 4; /* Ensure it overlaps other content */
+  z-index: 1000; /* Ensure it overlaps other content */
 }
 
 .back-to-archive-btn:hover,

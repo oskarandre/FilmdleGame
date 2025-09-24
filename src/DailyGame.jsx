@@ -116,32 +116,45 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
     }
   }, [isGuest, cacheLoaded, cachedFinished, cachedGaveUp]);
 
-  // Auto-scroll to bottom when new guesses are added (but not on initial load)
+  // Track if this is the initial load
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [previousGuessCount, setPreviousGuessCount] = useState(0);
   
+  // Scroll to top when guesses are first loaded (on page reload) to show most recent guess
   useEffect(() => {
-    if (answersRef.current && selectedMovies.length > 0) {
+    if (answersRef.current && selectedMovies.length > 0 && isInitialLoad) {
+      // Use a small timeout to ensure DOM is fully rendered
+      const timeoutId = setTimeout(() => {
+        if (answersRef.current) {
+          console.log("Scrolling to top on initial load. scrollHeight:", answersRef.current.scrollHeight, "clientHeight:", answersRef.current.clientHeight);
+          // Scroll to top on initial load to show the most recent guess (which is at the top of the list)
+          answersRef.current.scrollTo({
+            top: 0,
+            behavior: 'auto'
+          });
+        }
+      }, 100);
+      
+      setIsInitialLoad(false);
+      setPreviousGuessCount(selectedMovies.length);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [selectedMovies.length, isInitialLoad]);
+
+  // Auto-scroll to top when new guesses are added (but not on initial load)
+  useEffect(() => {
+    if (answersRef.current && selectedMovies.length > 0 && !isInitialLoad) {
       // Only auto-scroll if the number of guesses increased (new guess added)
       if (selectedMovies.length > previousGuessCount && previousGuessCount > 0) {
         answersRef.current.scrollTo({
-          top: answersRef.current.scrollHeight,
+          top: 0,
           behavior: 'smooth'
         });
       }
       setPreviousGuessCount(selectedMovies.length);
     }
-  }, [selectedMovies.length, previousGuessCount]);
-
-  // Scroll to top when guesses are first loaded (on page reload)
-  useEffect(() => {
-    if (answersRef.current && selectedMovies.length > 0 && previousGuessCount === 0) {
-      // Scroll to top on initial load to show the first guess
-      answersRef.current.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
-    }
-  }, [selectedMovies.length, previousGuessCount]);
+  }, [selectedMovies.length, previousGuessCount, isInitialLoad]);
 
   // Check if scroll indicator should be shown
   useEffect(() => {
@@ -164,7 +177,7 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
         answersRef.current.removeEventListener('scroll', checkScroll);
       }
     };
-  }, [selectedMovies.length]);
+  }, [selectedMovies.length, isInitialLoad]);
 
   async function loadGuesses(movieGuesses) {
     if (!movieGuesses || !Array.isArray(movieGuesses)) {
