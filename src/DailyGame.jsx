@@ -62,6 +62,7 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
   const [hasLoadedGuesses, setHasLoadedGuesses] = useState(false); // New state to track if guesses are loaded
   const [isFinished, setIsFinished] = useState(false); // New state to track if game is finished
   const [gaveUp, setGaveUp] = useState(false); // New state to track if user gave up
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false); // State for scroll indicator
   const answersRef = useRef(null); // Ref for the answers section
   
   // Use cache for guest users
@@ -115,56 +116,55 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
     }
   }, [isGuest, cacheLoaded, cachedFinished, cachedGaveUp]);
 
-  // Global scroll handler to control guesses section scrolling
+  // Auto-scroll to bottom when new guesses are added (but not on initial load)
+  const [previousGuessCount, setPreviousGuessCount] = useState(0);
+  
   useEffect(() => {
-    const handleGlobalScroll = (event) => {
+    if (answersRef.current && selectedMovies.length > 0) {
+      // Only auto-scroll if the number of guesses increased (new guess added)
+      if (selectedMovies.length > previousGuessCount && previousGuessCount > 0) {
+        answersRef.current.scrollTo({
+          top: answersRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+      setPreviousGuessCount(selectedMovies.length);
+    }
+  }, [selectedMovies.length, previousGuessCount]);
+
+  // Scroll to top when guesses are first loaded (on page reload)
+  useEffect(() => {
+    if (answersRef.current && selectedMovies.length > 0 && previousGuessCount === 0) {
+      // Scroll to top on initial load to show the first guess
+      answersRef.current.scrollTo({
+        top: 0,
+        behavior: 'auto'
+      });
+    }
+  }, [selectedMovies.length, previousGuessCount]);
+
+  // Check if scroll indicator should be shown
+  useEffect(() => {
+    const checkScroll = () => {
       if (answersRef.current) {
-        // Prevent default scroll behavior on the page
-        event.preventDefault();
-        
-        // Calculate scroll delta with better sensitivity
-        let delta = 0;
-        if (event.deltaY !== undefined) {
-          // Modern browsers - trackpad sends smaller values
-          delta = event.deltaY;
-        } else if (event.detail !== undefined) {
-          // Firefox
-          delta = event.detail * 40;
-        } else if (event.wheelDelta !== undefined) {
-          // Older browsers
-          delta = -event.wheelDelta;
-        }
-        
-        // Apply scroll to the answers section with higher sensitivity for trackpad
-        answersRef.current.scrollTop += delta * 10; // Higher multiplier for trackpad scrolling
+        const { scrollTop, scrollHeight, clientHeight } = answersRef.current;
+        const isScrollable = scrollHeight > clientHeight;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px threshold
+        setShowScrollIndicator(isScrollable && !isAtBottom);
       }
     };
 
-    // Add scroll event listener to the window
-    window.addEventListener('wheel', handleGlobalScroll, { passive: false });
-    
-    // Also handle touch events for mobile devices
-    const handleTouchMove = (event) => {
-      if (answersRef.current && event.touches.length === 1) {
-        event.preventDefault();
-        const touch = event.touches[0];
-        const deltaY = touch.clientY - (handleTouchMove.lastY || touch.clientY);
-        handleTouchMove.lastY = touch.clientY;
-        
-        if (Math.abs(deltaY) > 0) {
-          answersRef.current.scrollTop -= deltaY * 1.5; // Increase touch scroll sensitivity
-        }
-      }
-    };
+    if (answersRef.current) {
+      checkScroll();
+      answersRef.current.addEventListener('scroll', checkScroll);
+    }
 
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-    // Cleanup
     return () => {
-      window.removeEventListener('wheel', handleGlobalScroll);
-      window.removeEventListener('touchmove', handleTouchMove);
+      if (answersRef.current) {
+        answersRef.current.removeEventListener('scroll', checkScroll);
+      }
     };
-  }, []);
+  }, [selectedMovies.length]);
 
   async function loadGuesses(movieGuesses) {
     if (!movieGuesses || !Array.isArray(movieGuesses)) {
@@ -351,8 +351,16 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
             ))}
           </div>
 
-          <div className="answers" ref={answersRef}>
-            <AddMovie movies={selectedMovies} correctMovieId={correctMovieId} />
+          <div className="answers-container">
+            <div className="answers" ref={answersRef}>
+              <AddMovie movies={selectedMovies} correctMovieId={correctMovieId} />
+            </div>
+            {showScrollIndicator && (
+              <div className="scroll-indicator">
+                <div className="scroll-arrow">↓</div>
+                <span>Scroll for more guesses</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
