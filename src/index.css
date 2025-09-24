@@ -76,7 +76,7 @@ h1 {
 }
 
 h2 {
-  font-size: 1.2em;
+  font-size: 1.7vw;
   line-height: 1.1;
   color: ivory;
 }
@@ -288,11 +288,10 @@ ul {
   border-radius: 10px;
   border-color: white;
   border-style: solid;
-
 }
 
 .card-text {
-  font-size: 1.1em;
+  font-size: 1.5vw;
   font-weight: 600;
   color: white;
 }
