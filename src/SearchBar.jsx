@@ -26,13 +26,33 @@ export const SearchBar = ({ handleMovieSelect }) => {
     }
   }, []);
 
-  // Fetch data from API
+  // Helper function for basic relevance scoring
+  function getRelevanceScore(title, query) {
+    const lowerTitle = title.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+    if (lowerTitle === lowerQuery) return 3; // exact match
+    if (lowerTitle.startsWith(lowerQuery)) return 2; // starts with
+    if (lowerTitle.includes(lowerQuery)) return 1; // contains
+    return 0;
+  }
+
+  // Fetch data from API with relevance filtering
   const fetchData = (query) => {
     setLoading(true);
     setError(null);
     searchMovies(query)
       .then(result => {
-        setMovies(result);
+        // Score and sort results by relevance
+        const scored = result
+          .map(movie => ({
+            ...movie,
+            relevance: getRelevanceScore(movie.title, query)
+          }))
+          .filter(movie => movie.relevance > 0) // Only show relevant results
+          .sort((a, b) => b.relevance - a.relevance || b.popularity - a.popularity)
+          .slice(0, 15); // Limit to top 15
+
+        setMovies(scored);
         setLoading(false);
       })
       .catch(err => {

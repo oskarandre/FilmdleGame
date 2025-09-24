@@ -20,10 +20,20 @@ async function centralizedFetch(path, init) {
 
 export async function searchMovies(query) {
   if (!query) return [];
-  const json = await centralizedFetch(
-    `/search/movie?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`
-  );
-  return json.results;
+  let allResults = [];
+  const maxPages = 5;
+  for (let page = 1; page <= maxPages; page++) {
+    const json = await centralizedFetch(
+      `/search/movie?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=${page}`
+    );
+    if (json && Array.isArray(json.results)) {
+      allResults = allResults.concat(json.results);
+      if (page >= json.total_pages) break; // Stop if fewer pages available
+    } else {
+      break;
+    }
+  }
+  return allResults;
 }
 
 export function fetchMovie(id) {
