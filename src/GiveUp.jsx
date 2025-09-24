@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { doc, setDoc, increment, updateDoc } from 'firebase/firestore'; 
 import { db } from './lib/firebase.js';
 import guessMovie from '../scripts/guessMovie.js'; 
 import { useCurrentGameCache } from './hooks/useGameCache.js';
-import skullIcon from './assets/skull-white.png'; 
+import skullIcon from './assets/skull-white.png';
+import ConfirmModal from './components/ConfirmModal.jsx'; 
 
 function GiveUp({ userEmail, date, handleMovieSelectById, correctMovieId, setIsFinished, setGaveUp, nGuesses}) {
   const { saveGuess, finishGame, giveUpGame } = useCurrentGameCache();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   
   // Make sure to pass props as an object
   function setUserStats(userEmail, nGuesses) {
@@ -80,12 +82,32 @@ function GiveUp({ userEmail, date, handleMovieSelectById, correctMovieId, setIsF
     }
   }
 
+  const handleGiveUpClick = () => {
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmGiveUp = () => {
+    giveUp(userEmail, date);
+  };
+
   return (
     <div className="give-up">
-      <button className="btn-give-up" onClick={() => giveUp(userEmail, date)}>
+      <button className="btn-give-up" onClick={handleGiveUpClick}>
         Give up? 
         <img className="skull-icon" src={skullIcon} alt="skull-icon"/>
       </button>
+      
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmGiveUp}
+        title="Give Up?"
+        message="This will end your current game and reveal the answer."
+        confirmText="Give Up"
+        cancelText="Cancel"
+        confirmButtonClass="btn-confirm"
+        cancelButtonClass="btn-cancel"
+      />
     </div>
   );
 }
