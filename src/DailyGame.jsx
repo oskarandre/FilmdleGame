@@ -63,6 +63,7 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
   const [isFinished, setIsFinished] = useState(false); // New state to track if game is finished
   const [gaveUp, setGaveUp] = useState(false); // New state to track if user gave up
   const [showScrollIndicator, setShowScrollIndicator] = useState(false); // State for scroll indicator
+  const [newMovieIds, setNewMovieIds] = useState(new Set()); // Track which movies are newly added (should animate)
   const answersRef = useRef(null); // Ref for the answers section
   
   // Use cache for guest users
@@ -185,9 +186,10 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
       return;
     }
     
+    // Load guesses without animation (these are loaded from database/cache)
     for (const movieId of movieGuesses) {
       if (movieId && typeof movieId === 'number') {
-        await handleMovieSelectById(movieId);
+        await handleMovieSelectById(movieId, false); // false = no animation
       } else {
         console.warn("Skipping invalid movieId:", movieId);
       }
@@ -202,7 +204,7 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
     
     console.log("Loading cached guesses:", cachedGuesses);
     
-    // Load each cached guess directly into selectedMovies
+    // Load each cached guess directly into selectedMovies (no animation for cached data)
     const loadedMovies = [];
     for (const movieData of cachedGuesses) {
       if (movieData && movieData.id) {
@@ -219,7 +221,7 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
     }
   }
 
-  const handleMovieSelectById = async (movieId) => {
+  const handleMovieSelectById = async (movieId, shouldAnimate = true) => {
     if (!movieId || typeof movieId !== 'number') {
       console.error("Invalid movieId:", movieId);
       return null;
@@ -234,6 +236,11 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
           }
           return prevSelectedMovies;
         });
+        
+        // Mark as new movie if it should animate (user's new guess)
+        if (shouldAnimate) {
+          setNewMovieIds(prev => new Set([...prev, movieId]));
+        }
       }
       return information;
     } catch (error) {
@@ -251,6 +258,9 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
         }
         return prevSelectedMovies;
       });
+      
+      // Mark as new movie for animation (user's new guess)
+      setNewMovieIds(prev => new Set([...prev, movie.id]));
 
       // Save guess - use cache for guest users, Firebase for registered users
       if (isGuest) {
@@ -366,7 +376,11 @@ function DailyGame({ userEmail, date, gameStatus, gaveUpStatus, correctMovieId, 
 
           <div className="answers-container">
             <div className="answers" ref={answersRef}>
-              <AddMovie movies={selectedMovies} correctMovieId={correctMovieId} />
+              <AddMovie 
+                movies={selectedMovies} 
+                correctMovieId={correctMovieId} 
+                shouldAnimate={movie => newMovieIds.has(movie.id)}
+              />
             </div>
             {showScrollIndicator && (
               <div className="scroll-indicator">

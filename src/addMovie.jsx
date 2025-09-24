@@ -4,7 +4,7 @@ import { PreviewActor } from './PreviewActor';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 
-const NewFilm = ({ movies, correctMovieId }) => {
+const NewFilm = ({ movies, correctMovieId, shouldAnimate = () => true }) => {
     const [comparisonResults, setComparisonResults] = useState({});
     const [previewActorId, setPreviewActorId] = useState(null);
 
@@ -78,10 +78,12 @@ const NewFilm = ({ movies, correctMovieId }) => {
                     {memoizedMovieHandlers[index]}
                     <div className="card-deck pb-3 ">
                         {cards.map((card, cardIndex) => {
-                            const combinedDelayClass = `animate__flipInY--delay-${Math.min(index, 5)}-${cardIndex}`;
+                            const movieShouldAnimate = shouldAnimate(movie);
+                            const combinedDelayClass = movieShouldAnimate ? `animate__flipInY--delay-${Math.min(index, 5)}-${cardIndex}` : '';
+                            const animationClasses = movieShouldAnimate ? 'animate__animated animate__flipInY' : '';
                             
                             return (
-                                <div key={cardIndex} className={`${card.cardClass} animate__animated animate__flipInY ${combinedDelayClass}`}>
+                                <div key={cardIndex} className={`${card.cardClass} ${animationClasses} ${combinedDelayClass}`}>
                                     {card.type === "poster" ? (
                                         <img src={`https://image.tmdb.org/t/p/w500${movie.poster}`} className="card-img-top" alt={movie.original_title} />
                                     ) : (
