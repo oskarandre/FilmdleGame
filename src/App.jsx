@@ -14,6 +14,7 @@ import tmdbLogo from './assets/tmdbLogo.svg';
 
 // REMOVE WHEN BUG IS FIXED
 import Modal from './modal.jsx';
+import TutorialModal from './components/TutorialModal.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,6 +25,7 @@ function App() {
 
   // REMOVE WHEN BUG IS FIXED
   const [showModal, setShowModal] = useState(false); // State to control the modal visibility
+  const [showTutorial, setShowTutorial] = useState(false); // State to control the tutorial modal visibility
 
 
   useEffect(() => {
@@ -34,6 +36,17 @@ function App() {
     });
 
     return () => unsubscribe();
+  }, []);
+
+  // Check if this is the first time visit
+  useEffect(() => {
+    const isFirstTime = localStorage.getItem('firstTimeVisit');
+    if (isFirstTime === null) {
+      // First time visiting - set the flag to false for future visits
+      localStorage.setItem('firstTimeVisit', 'false');
+      // Show tutorial modal for first-time visitors
+      setShowTutorial(true);
+    }
   }, []);
 
 
@@ -92,7 +105,11 @@ function App() {
 
               {/* REMOVE WHEN BUG IS FIXED */}
               <Modal show={showModal} onClose={() => setShowModal(false)} /> {/* Add the Modal component */}
+              
+              {/* Tutorial Modal for first-time visitors */}
+              <TutorialModal show={showTutorial} onClose={() => setShowTutorial(false)} />
 
+              
             </>
           }      
         
