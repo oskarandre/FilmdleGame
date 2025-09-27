@@ -1190,7 +1190,7 @@ ul > li {
   justify-content: center;
   align-items: center;
   width: 90%;
-  max-width: 600px;
+  max-width: 1200px;
   padding: 2rem 3rem;
   background: linear-gradient(135deg, 
     rgba(52, 152, 219, 0.95) 0%, 
@@ -1447,30 +1447,32 @@ ul > li {
 .archive-header {
   position: fixed;
   top: 4rem;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 90%;
   max-width: 1200px;
-  background: linear-gradient(135deg, rgba(46, 46, 46, 0.95) 0%, rgba(30, 30, 30, 0.95) 100%);
-  backdrop-filter: blur(20px);
-  border: 2px solid rgba(100, 108, 255, 0.3);
+  padding: 2rem 3rem;
+  background: linear-gradient(135deg, 
+    rgba(52, 152, 219, 0.95) 0%, 
+    rgba(155, 89, 182, 0.95) 50%, 
+    rgba(231, 76, 60, 0.95) 100%);
   border-radius: 20px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(100, 108, 255, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  padding: 2rem 3rem;
-  margin: 0 auto 2rem auto;
+  backdrop-filter: blur(10px);
   z-index: 100;
   transition: all 0.3s ease;
+  text-align: center;
 }
 
 .archive-header:hover {
-  transform: translateX(-50%) translateY(-2px);
+  transform: translateY(-2px);
   box-shadow: 
     0 12px 40px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(100, 108, 255, 0.4),
@@ -1511,7 +1513,6 @@ ul > li {
   max-width: 1200px;
   padding: 0;
   margin: 1rem auto 0 auto;
-  animation: fadeInUp 0.6s ease-out;
   justify-items: center;
   justify-content: center;
 }
@@ -1704,17 +1705,6 @@ ul > li {
   }
 }
 
-/* Staggered animation for archive cards */
-.old-game:nth-child(1) { animation-delay: 0.1s; }
-.old-game:nth-child(2) { animation-delay: 0.15s; }
-.old-game:nth-child(3) { animation-delay: 0.2s; }
-.old-game:nth-child(4) { animation-delay: 0.25s; }
-.old-game:nth-child(5) { animation-delay: 0.3s; }
-.old-game:nth-child(6) { animation-delay: 0.35s; }
-.old-game:nth-child(7) { animation-delay: 0.4s; }
-.old-game:nth-child(8) { animation-delay: 0.45s; }
-.old-game:nth-child(9) { animation-delay: 0.5s; }
-.old-game:nth-child(10) { animation-delay: 0.55s; }
 
 .old-game {
   display: flex;
@@ -1737,13 +1727,11 @@ ul > li {
   min-height: 120px;
   cursor: pointer;
   transition: 
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     background 0.3s ease,
     border-color 0.3s ease,
     box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
-  animation: fadeInUp 0.6s ease-out;
   animation-fill-mode: both;
 }
 
