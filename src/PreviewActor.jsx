@@ -18,7 +18,7 @@ export const PreviewActor = ({ actor_id }) => {
     }, [actor_id]);
 
     if (!actorInfo) {
-        return <div>Loading...</div>;
+        return <div>Loading actor info...</div>;
     }
 
     return (

@@ -183,7 +183,7 @@ const UserGameData = ({ userEmail, date }) => {
   }, [userEmail, date, newGameCreated]);
 
   if (isLoading) {
-    return <p>Loading game data...</p>;
+    return <p></p>;
   }
 
   if (error) {

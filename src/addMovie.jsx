@@ -193,7 +193,7 @@ const NewFilm = ({ movies, correctMovieId, shouldAnimate = () => true }) => {
     if (!movies) return null;
     
     if (!correctMovieId) {
-        return <div>Loading game data...</div>;
+        return <div></div>;
     }
 
     return (
