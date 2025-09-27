@@ -19,7 +19,7 @@ const Archive = ({ userEmail }) => {
     };
 
     // Function to handle going back to the archive view
-     const handleBackToArchive = () => {
+    const handleBackToArchive = () => {
         setSelectedDate(null);
         fetchGames(); // Fetch games again when going back to the archive view
     };
@@ -52,52 +52,52 @@ const Archive = ({ userEmail }) => {
 
     return (
         <div className='archive'>
-           
+
             {!selectedDate ? (
                 <div className='archive-view'>
-                <>
-                    <div className='archive-header'>
-                        <h1>Archive</h1>
-                    </div>
-                    <div className='archive-box'>
-                        <div className='topper'>
+                    <>
+                        <div className='archive-header'>
+                            <h1>Archive</h1>
                         </div>
-                        <div className='old-games'>
-    {Array.from({ length: numberOfDays }, (_, index) => {
-        const date = new Date(startDate);
-        date.setDate(date.getDate() + index);
-        return date;
-    }).reverse().map((date, index) => {
-        const formattedDate = formatDate(date);
-        // Determine the class based on priority: red -> green -> yellow
-        let className = 'old-game';
-        
-        if (giveUpDates.includes(formattedDate)) {
-            className += ' red';
-        } else if (finishedDates.includes(formattedDate)) {
-            className += ' green';
-        } else if (startedDates.includes(formattedDate)) {
-            className += ' yellow';
-        }
+                        <div className='archive-box'>
+                            <div className='topper'>
+                            </div>
+                            <div className='old-games'>
+                                {Array.from({ length: numberOfDays }, (_, index) => {
+                                    const date = new Date(startDate);
+                                    date.setDate(date.getDate() + index);
+                                    return date;
+                                }).reverse().map((date, index) => {
+                                    const formattedDate = formatDate(date);
+                                    // Determine the class based on priority: red -> green -> yellow
+                                    let className = 'old-game';
 
-        return (
-            <div
-                key={index}
-                className={className}
-                onClick={() => handleClick(date)}
-            >
-                <p>{date.toLocaleDateString()}</p>
-            </div>
-        );
-    })}
-</div>
+                                    if (giveUpDates.includes(formattedDate)) {
+                                        className += ' red';
+                                    } else if (finishedDates.includes(formattedDate)) {
+                                        className += ' green';
+                                    } else if (startedDates.includes(formattedDate)) {
+                                        className += ' yellow';
+                                    }
 
-                    </div>
-                </>
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={className}
+                                            onClick={() => handleClick(date)}
+                                        >
+                                            <p>{date.toLocaleDateString()}</p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                        </div>
+                    </>
                 </div>
             ) : (
                 <div>
-                     <button className = "back-to-archive-btn" onClick={handleBackToArchive}>Back to Overview</button>
+                    <button className="back-to-archive-btn" onClick={handleBackToArchive}>Back to Overview</button>
                     <FetchUserGameData userEmail={userEmail} date={formatDate(selectedDate)} />
                 </div>
             )}
